@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- User Avatar and Name -->
+        <ImageView
+            android:id="@+id/userAvatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@tools:sample/avatars"
+            android:layout_marginBottom="16dp"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Имя пользователя"
+            android:textSize="24sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Toggle between Vacations and Business Trips -->
+        <RadioGroup
+            android:id="@+id/toggleGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/vacationsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Отпуска"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/businessTripsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Командировки" />
+        </RadioGroup>
+
+        <!-- List of Requests -->
+        <LinearLayout
+            android:id="@+id/requestList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Example Request Item -->
+            <LinearLayout
+                android:id="@+id/requestItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Заявка на поездку"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Hidden Details -->
+                <LinearLayout
+                    android:id="@+id/requestDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Место поездки: Москва"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Дата: 01.06.2024 - 10.06.2024"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Action Buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="end">
+
+                        <Button
+                            android:id="@+id/approveButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Одобрить"
+                            android:textColor="@android:color/white"
+                            android:backgroundTint="?attr/colorAccent"
+                            android:layout_marginEnd="8dp" />
+
+                        <Button
+                            android:id="@+id/rejectButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Отклонить"
+                            android:textColor="?attr/colorAccent"
+                            android:backgroundTint="@android:color/transparent"
+                            android:background="@drawable/button_border"
+                            android:layout_marginEnd="8dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
