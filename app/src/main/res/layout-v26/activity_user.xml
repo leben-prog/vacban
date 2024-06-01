@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".UserActivity">
+    android:padding="16dp">
 
     <!-- Переключатель между вкладками -->
     <LinearLayout
@@ -131,15 +130,17 @@
             android:id="@+id/layout_requests"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-
+            android:orientation="vertical">
+            <!-- Заявки будут добавляться программно -->
+        </LinearLayout>
     </ScrollView>
 
     <Button
         android:id="@+id/button_newreq"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Создать новую заявку"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:text="Создать заявку"
+        android:textSize="16sp" />
 
 </LinearLayout>

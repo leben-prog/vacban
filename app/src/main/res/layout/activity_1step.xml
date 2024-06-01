@@ -64,7 +64,7 @@
         android:layout_marginBottom="8dp"/>
 
     <Spinner
-        android:id="@+id/tripTypeSpinner2"
+        android:id="@+id/tripDestSpinner"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginBottom="16dp"/>
@@ -73,7 +73,7 @@
         android:id="@+id/continueButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Продолжить"
+        android:text="Создать заявку"
         android:textSize="16sp" />
 
 </LinearLayout>

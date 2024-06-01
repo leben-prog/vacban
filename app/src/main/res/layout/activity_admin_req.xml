@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
     tools:context=".MainActivity">
 
@@ -17,9 +18,9 @@
             android:id="@+id/userAvatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@tools:sample/avatars"
+
             android:layout_marginBottom="16dp"
-            tools:ignore="ContentDescription" />
+            />
 
         <TextView
             android:id="@+id/userName"

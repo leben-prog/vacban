@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">vacban</string>
+    <string name="app_name">VacBan</string>
+
+    <!-- Массивы для Spinner -->
+    <string-array name="trip_types">
+        <item>Отпуск</item>
+        <item>Командировка</item>
+    </string-array>
+
+    <string-array name="trip_destinations">
+        <item>Чертаново</item>
+        <item>Тутаев</item>
+        <item>Нью-Йорк</item>
+        <item>Лондон</item>
+    </string-array>
 </resources>
