@@ -1,14 +1,11 @@
-// MainActivity.kt
+package com.example.vacban
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.Toast
-import com.example.vacban.AdminActivity
-import com.example.vacban.R
-import com.example.vacban.RegActivity
-import com.example.vacban.UserActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,35 +29,24 @@ class MainActivity : AppCompatActivity() {
             if (login == "" || pass == "") {
                 Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
             } else {
-                val db =    DbHelper(this)
-                val isAdmin = db.isAdmin(login, pass)
+                val db = DbHelper(this)
+                val isAuth = db.getUser(login, pass)
 
-                if (isAdmin) {
-                    // Если пользователь является администратором
-                    Toast.makeText(this, "Администратор $login авторизован", Toast.LENGTH_LONG).show()
-                    // Очищаем поля ввода
+                if (isAuth) {
+                    Toast.makeText(this, "Пользователь $login авторизован", Toast.LENGTH_LONG).show()
                     userLogin.text.clear()
                     userPassword.text.clear()
-                    // Переходим на AdminActivity
-                    val intent = Intent(this, AdminActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    // Если пользователь не является администратором, продолжаем аутентификацию
-                    val isAuth = db.getUser(login, pass)
-                    if (isAuth) {
-                        // Если аутентификация успешна
-                        Toast.makeText(this, "Пользователь $login авторизован", Toast.LENGTH_LONG).show()
-                        // Очищаем поля ввода
-                        userLogin.text.clear()
-                        userPassword.text.clear()
-                        // Переходим на UserActivity
+
+                    if (login == "admin") {
+                        val intent = Intent(this, AdminActivity::class.java)
+                        startActivity(intent)
+                    } else {
                         val intent = Intent(this, UserActivity::class.java)
                         intent.putExtra("userId", login.hashCode())
                         startActivity(intent)
-                    } else {
-                        // Если аутентификация не успешна
-                        Toast.makeText(this, "Пользователь $login не авторизован", Toast.LENGTH_LONG).show()
                     }
+                } else {
+                    Toast.makeText(this, "Пользователь $login не авторизован", Toast.LENGTH_LONG).show()
                 }
             }
         }
