@@ -1,12 +1,12 @@
 package com.example.vacban
 
+import User
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
-data class User(val id: Int, val login: String, val name: String, val pass: String)
 data class UserRequest(val id: Int, val category: String, val departureDate: String, val arrivalDate: String, val status: String, val userId: Int)
 
 class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -79,6 +79,15 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return exists
     }
 
+    fun getUserIdByLogin(login: String): Int {
+        val db = this.readableDatabase
+        val query = "SELECT $USER_ID FROM $TABLE_USERS WHERE $USER_LOGIN = ?"
+        val result = db.rawQuery(query, arrayOf(login))
+        val userId = if (result.moveToFirst()) result.getInt(result.getColumnIndexOrThrow(USER_ID)) else -1
+        result.close()
+        return userId
+    }
+
     fun addReq(item: UserRequest, userId: Int) {
         val values = ContentValues().apply {
             put(REQUEST_CATEGORY, item.category)
@@ -118,28 +127,28 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return requests
     }
 
-    fun getAllUsers(): List<User> {
+    fun getAllUsers(): MutableList<User> {
         val db = this.readableDatabase
-        val result = db.rawQuery("SELECT * FROM $TABLE_USERS", null)
+        val cursor = db.rawQuery("SELECT * FROM users", null)
         val users = mutableListOf<User>()
 
-        if (result.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             do {
-                val id = result.getInt(result.getColumnIndexOrThrow(USER_ID))
-                val login = result.getString(result.getColumnIndexOrThrow(USER_LOGIN))
-                val name = result.getString(result.getColumnIndexOrThrow(USER_NAME))
-                val pass = result.getString(result.getColumnIndexOrThrow(USER_PASS))
-                val user = User(id, login, name, pass)
-                users.add(user)
-                Log.d("DbHelper", "User loaded: $user")
-            } while (result.moveToNext())
-        } else {
-            Log.d("DbHelper", "No users found")
+                val login = cursor.getString(cursor.getColumnIndexOrThrow("login"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val pass = cursor.getString(cursor.getColumnIndexOrThrow("pass"))
+                users.add(User(login, name, pass))
+            } while (cursor.moveToNext())
         }
-        result.close()
+
+        cursor.close()
         return users
     }
-
+    fun deleteUser(user: User) {
+        val db = this.writableDatabase
+        db.delete("users", "login = ?", arrayOf(user.login))
+        db.close()
+    }
     fun updateRequestStatus(requestId: Int, newStatus: String) {
         val values = ContentValues().apply {
             put(REQUEST_STATUS, newStatus)

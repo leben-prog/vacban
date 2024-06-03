@@ -1,47 +1,65 @@
 package com.example.vacban
 
-import android.content.Intent
+import User
 import android.os.Bundle
-import android.widget.ListView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.ArrayAdapter
-import android.widget.AdapterView
-import android.widget.SearchView
 
 class AdminActivity : AppCompatActivity() {
+
     private lateinit var dbHelper: DbHelper
-    private lateinit var userList: List<User>
-    private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var userListView: ListView
+    private lateinit var addUserButton: Button
+    private lateinit var userLoginInput: EditText
+    private lateinit var userNameInput: EditText
+    private lateinit var userPassInput: EditText
+    private lateinit var userAdapter: ArrayAdapter<User>
+    private val userList = mutableListOf<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin)
 
         dbHelper = DbHelper(this)
-        userList = dbHelper.getAllUsers()
-        val userNames = userList.map { it.name }
 
-        val listView: ListView = findViewById(R.id.user_list)
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, userNames)
-        listView.adapter = adapter
+        userListView = findViewById(R.id.user_list_view)
+        addUserButton = findViewById(R.id.add_user_button)
+        userLoginInput = findViewById(R.id.user_login_input)
+        userNameInput = findViewById(R.id.user_name_input)
+        userPassInput = findViewById(R.id.user_pass_input)
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            val userId = userList[position].id
-            val intent = Intent(this, UserDetailActivity::class.java)
-            intent.putExtra("userId", userId)
-            startActivity(intent)
+        loadUsers()
+
+        addUserButton.setOnClickListener {
+            val login = userLoginInput.text.toString().trim()
+            val name = userNameInput.text.toString().trim()
+            val pass = userPassInput.text.toString().trim()
+
+            if (login.isNotEmpty() && name.isNotEmpty() && pass.isNotEmpty()) {
+                val newUser = User(login, name, pass)
+                dbHelper.addUser(newUser)
+                userList.add(newUser)
+                userAdapter.notifyDataSetChanged()
+                userLoginInput.text.clear()
+                userNameInput.text.clear()
+                userPassInput.text.clear()
+            } else {
+                Toast.makeText(this, "Все поля должны быть заполнены", Toast.LENGTH_LONG).show()
+            }
         }
 
-        val searchView: SearchView = findViewById(R.id.searchView)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
+        userListView.setOnItemLongClickListener { _, _, position, _ ->
+            val user = userList[position]
+            dbHelper.deleteUser(user)
+            userList.removeAt(position)
+            userAdapter.notifyDataSetChanged()
+            true
+        }
+    }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter.filter(newText)
-                return false
-            }
-        })
+    private fun loadUsers() {
+        userList.addAll(dbHelper.getAllUsers())
+        userAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, userList)
+        userListView.adapter = userAdapter
     }
 }

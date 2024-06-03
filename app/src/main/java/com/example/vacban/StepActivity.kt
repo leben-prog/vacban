@@ -1,11 +1,13 @@
 package com.example.vacban
 
-import DbHelper
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+
+import com.example.vacban.DbHelper
+import com.example.vacban.UserRequest
 
 class StepActivity : AppCompatActivity() {
 
@@ -56,7 +58,7 @@ class StepActivity : AppCompatActivity() {
             }
 
             val userId = getCurrentUserId()
-            val request = Request(0, "$tripType: $tripDestination", departureDate, arrivalDate, "Ожидание")
+            val request = UserRequest(0, "$tripType: $tripDestination", departureDate, arrivalDate, "Ожидание", userId)
 
             dbHelper.addReq(request, userId)
             Toast.makeText(this, "Заявка создана", Toast.LENGTH_SHORT).show()
