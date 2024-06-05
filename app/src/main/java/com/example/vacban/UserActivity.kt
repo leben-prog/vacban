@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -23,45 +22,45 @@ class UserActivity : AppCompatActivity() {
     private lateinit var layoutRequests: LinearLayout
     private val requests = mutableListOf<Request>()
 
+    private lateinit var btnVacations: Button
+    private lateinit var btnBusinessTrips: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
         layoutRequests = findViewById(R.id.layout_requests)
+        btnVacations = findViewById(R.id.btn_vacations)
+        btnBusinessTrips = findViewById(R.id.btn_business_trips)
+
+        btnVacations.setOnClickListener {
+            onVacationsClicked(it)
+        }
+
+        btnBusinessTrips.setOnClickListener {
+            onBusinessTripsClicked(it)
+        }
 
         findViewById<Button>(R.id.button_newreq).setOnClickListener {
             val intent = Intent(this, StepActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_NEW_REQUEST)
         }
 
-        findViewById<Button>(R.id.btn_vacations).setOnClickListener {
-            onVacationsClicked(it)
-        }
-
-        findViewById<Button>(R.id.btn_business_trips).setOnClickListener {
-            onBusinessTripsClicked(it)
-        }
-
-        // Загрузка заявок
+        // Load requests and set initial state
         loadRequests()
+        onVacationsClicked(btnVacations) // Make "Vacations" button active by default
     }
 
     private fun loadRequests() {
-        // Пример добавления заявок
-        requests.add(Request(1, "Отпуск: Москва", "10.10.2005", "10.10.2006", "Одобрен"))
-        requests.add(Request(2, "Командировка: Москва", "10.10.2005", "10.10.2006", "Ожидание"))
-        requests.add(Request(3, "Отпуск: Москва", "10.10.2005", "10.10.2006", "Отказано"))
-
-        // Изначально показываем отпуска
+        // Initially show vacations
         showRequestsByCategory("Отпуск")
     }
 
     private fun addRequestToView(request: Request) {
         val requestLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(8, 8, 8, 8)
-            setBackgroundResource(android.R.drawable.dialog_holo_light_frame)
             setPadding(16, 16, 16, 16)
+            setBackgroundResource(android.R.drawable.dialog_holo_light_frame)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -74,13 +73,28 @@ class UserActivity : AppCompatActivity() {
             text = request.category
             textSize = 18f
             setTextColor(Color.BLACK)
-            setTypeface(null, android.graphics.Typeface.BOLD)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(16, 0, 0, 0) // Shift text right
+            }
+            maxLines = 1
+            ellipsize = android.text.TextUtils.TruncateAt.END
         }
 
         val datesTextView = TextView(this).apply {
             text = "${request.departureDate} - ${request.arrivalDate}"
             textSize = 16f
             setTextColor(Color.BLACK)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(16, 0, 0, 0) // Shift text right
+            }
+            maxLines = 1
+            ellipsize = android.text.TextUtils.TruncateAt.END
         }
 
         val statusTextView = TextView(this).apply {
@@ -92,6 +106,14 @@ class UserActivity : AppCompatActivity() {
                 "Отказано" -> Color.RED
                 else -> Color.BLACK
             })
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(16, 0, 0, 0) // Shift text right
+            }
+            maxLines = 1
+            ellipsize = android.text.TextUtils.TruncateAt.END
         }
 
         requestLayout.addView(categoryTextView)
@@ -109,12 +131,28 @@ class UserActivity : AppCompatActivity() {
 
     fun onVacationsClicked(view: View) {
         findViewById<TextView>(R.id.tv_title).text = "Ваши отпуска"
+        setButtonActive(btnVacations)
+        setButtonInactive(btnBusinessTrips)
         showRequestsByCategory("Отпуск")
     }
 
     fun onBusinessTripsClicked(view: View) {
         findViewById<TextView>(R.id.tv_title).text = "Ваши командировки"
+        setButtonActive(btnBusinessTrips)
+        setButtonInactive(btnVacations)
         showRequestsByCategory("Командировка")
+    }
+
+    private fun setButtonActive(button: Button) {
+        button.isSelected = true
+        button.setBackgroundResource(if (button.id == R.id.btn_vacations) R.drawable.button_left_active else R.drawable.button_right_active)
+        button.setTextColor(resources.getColor(R.color.white))
+    }
+
+    private fun setButtonInactive(button: Button) {
+        button.isSelected = false
+        button.setBackgroundResource(if (button.id == R.id.btn_vacations) R.drawable.button_left_inactive else R.drawable.button_right_inactive)
+        button.setTextColor(resources.getColor(R.color.purple))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

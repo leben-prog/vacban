@@ -20,7 +20,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Отпуска"
-            android:onClick="onVacationsClicked"/>
+            android:background="@drawable/button_selector_left"
+            android:onClick="onVacationsClicked"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/btn_business_trips"
@@ -28,7 +30,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Командировки"
-            android:onClick="onBusinessTripsClicked"/>
+            android:background="@drawable/button_selector_right"
+            android:onClick="onBusinessTripsClicked"
+            android:textColor="@color/purple" />
     </LinearLayout>
 
     <!-- Отделяющая линия -->
