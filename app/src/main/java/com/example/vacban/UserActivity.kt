@@ -3,11 +3,14 @@ package com.example.vacban
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import android.view.View
 
 data class Request(
     val id: Int,
@@ -19,6 +22,9 @@ data class Request(
 
 class UserActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
     private lateinit var layoutRequests: LinearLayout
     private val requests = mutableListOf<Request>()
 
@@ -28,6 +34,9 @@ class UserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
+
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         layoutRequests = findViewById(R.id.layout_requests)
         btnVacations = findViewById(R.id.btn_vacations)
@@ -52,8 +61,31 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun loadRequests() {
-        // Initially show vacations
-        showRequestsByCategory("Отпуск")
+        val uid = auth.currentUser?.uid
+        if (uid == null) {
+            Toast.makeText(this, "Ошибка: пользователь не найден", Toast.LENGTH_LONG).show()
+            return
+        }
+        db.collection("requests").document(uid).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val departureDate = document.getString("departureDate") ?: ""
+                    val arrivalDate = document.getString("arrivalDate") ?: ""
+                    val tripType = document.getString("tripType") ?: ""
+                    val tripDest = document.getString("tripDest") ?: ""
+                    val category = "$tripType: $tripDest"
+                    requests.clear()
+                    layoutRequests.removeAllViews()
+                    val request = Request(0, category, departureDate, arrivalDate, "Ожидание")
+                    requests.add(request)
+                    addRequestToView(request)
+                } else {
+                    Toast.makeText(this, "Заявок нет", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Ошибка при загрузке заявок: ${e.message}", Toast.LENGTH_LONG).show()
+            }
     }
 
     private fun addRequestToView(request: Request) {

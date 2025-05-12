@@ -8,15 +8,21 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class StepActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
     private lateinit var category: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_1step)
 
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
         category = intent.getStringExtra("category") ?: "vacation"
 
         val continueButton = findViewById<Button>(R.id.continueButton)
@@ -62,16 +68,31 @@ class StepActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val userId = getCurrentUserId()
-            // TODO: save request to Firestore
-            Toast.makeText(this, "Заявка создана", Toast.LENGTH_SHORT).show()
-
-            val intent = Intent()
-            intent.putExtra("category", "$tripType: $tripDestination")
-            intent.putExtra("departureDate", departureDate)
-            intent.putExtra("arrivalDate", arrivalDate)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+            val uid = auth.currentUser?.uid
+            if (uid == null) {
+                Toast.makeText(this, "Ошибка: пользователь не найден", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            val requestData = mapOf(
+                "departureDate" to departureDate,
+                "arrivalDate" to arrivalDate,
+                "tripType" to tripType,
+                "tripDest" to tripDestination
+            )
+            db.collection("requests").document(uid)
+                .set(requestData)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Заявка сохранена в Firestore", Toast.LENGTH_SHORT).show()
+                    val resultIntent = Intent()
+                    resultIntent.putExtra("category", "$tripType: $tripDestination")
+                    resultIntent.putExtra("departureDate", departureDate)
+                    resultIntent.putExtra("arrivalDate", arrivalDate)
+                    setResult(Activity.RESULT_OK, resultIntent)
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Ошибка сохранения: ${e.message}", Toast.LENGTH_LONG).show()
+                }
         }
     }
 
