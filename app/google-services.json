@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "333628493551",
+    "project_id": "timeoff-91cd2",
+    "storage_bucket": "timeoff-91cd2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333628493551:android:1083b0a89b26b428d5151a",
+        "android_client_info": {
+          "package_name": "com.example.vacban"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnfRUCvtgEyhFqfQs2AJ7bufdXcS3wuhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,14 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 
 class StepActivity : AppCompatActivity() {
 
-    private lateinit var dbHelper: DbHelper
     private lateinit var category: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_1step)
-
-        dbHelper = DbHelper(this)
 
         category = intent.getStringExtra("category") ?: "vacation"
 
@@ -66,9 +63,7 @@ class StepActivity : AppCompatActivity() {
             }
 
             val userId = getCurrentUserId()
-            val request = UserRequest(0, "$tripType: $tripDestination", departureDate, arrivalDate, "Ожидание", userId)
-
-            dbHelper.addReq(request, userId)
+            // TODO: save request to Firestore
             Toast.makeText(this, "Заявка создана", Toast.LENGTH_SHORT).show()
 
             val intent = Intent()
