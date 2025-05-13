@@ -73,11 +73,14 @@ class StepActivity : AppCompatActivity() {
                 Toast.makeText(this, "Ошибка: пользователь не найден", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+            val email = auth.currentUser?.email ?: ""
             val requestData = mapOf(
+                "email" to email,
                 "departureDate" to departureDate,
                 "arrivalDate" to arrivalDate,
                 "tripType" to tripType,
-                "tripDest" to tripDestination
+                "tripDest" to tripDestination,
+                "status" to "Ожидание"
             )
             db.collection("requests").document(uid)
                 .set(requestData)

@@ -24,6 +24,7 @@ class RegActivity : AppCompatActivity() {
         registerButton.setOnClickListener {
             val email = userLogin.text.toString().trim()
             val password = userPassword.text.toString().trim()
+            val name = userName.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Введите email и пароль", Toast.LENGTH_SHORT).show()

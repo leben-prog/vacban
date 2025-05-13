@@ -76,7 +76,8 @@ class UserActivity : AppCompatActivity() {
                     val category = "$tripType: $tripDest"
                     requests.clear()
                     layoutRequests.removeAllViews()
-                    val request = Request(0, category, departureDate, arrivalDate, "Ожидание")
+                    val status = document.getString("status") ?: "Ожидание"
+                    val request = Request(0, category, departureDate, arrivalDate, status)
                     requests.add(request)
                     addRequestToView(request)
                 } else {

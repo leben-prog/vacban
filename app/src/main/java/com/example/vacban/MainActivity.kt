@@ -35,23 +35,24 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (email == "admin" && password == "admin") {
-                val intent = Intent(this, AdminActivity::class.java)
-                startActivity(intent)
-                return@setOnClickListener
-            }
-
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Авторизация успешна", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, UserActivity::class.java)
-                        startActivity(intent)
+                        val uid = auth.currentUser?.uid
+                        if (uid == ADMIN_UID) {
+                            startActivity(Intent(this, AdminActivity::class.java))
+                        } else {
+                            startActivity(Intent(this, UserActivity::class.java))
+                        }
                         finish()
                     } else {
-                        Toast.makeText(this, "Пользователь не существует", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Ошибка входа: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
         }
+    }
+
+    companion object {
+        private const val ADMIN_UID = "VV1F0KFjhUbGkpsvpDEmLziOHal2"
     }
 }
