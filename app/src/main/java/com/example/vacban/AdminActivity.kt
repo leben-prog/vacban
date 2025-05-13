@@ -1,9 +1,11 @@
 package com.example.vacban
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +45,13 @@ class AdminActivity : AppCompatActivity() {
         requestListView.setOnItemClickListener { _, _, position, _ ->
             val uid = requestIds[position]
             showRequestOptions(uid)
+        }
+
+        // Logout button
+        findViewById<Button>(R.id.logoutButton).setOnClickListener {
+            auth.signOut()
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
     }
 

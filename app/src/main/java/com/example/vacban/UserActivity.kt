@@ -35,6 +35,13 @@ class UserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
+        // Logout button
+        findViewById<Button>(R.id.logoutButton).setOnClickListener {
+            auth.signOut()
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 

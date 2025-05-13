@@ -13,8 +13,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         auth = FirebaseAuth.getInstance()
+        // Auto-login if user is already signed in
+        auth.currentUser?.let { user ->
+            val nextActivity = if (user.uid == ADMIN_UID) AdminActivity::class.java else UserActivity::class.java
+            startActivity(Intent(this, nextActivity))
+            finish()
+            return
+        }
+        setContentView(R.layout.activity_main)
 
         val userLogin: EditText = findViewById(R.id.user_login)
         val userPassword: EditText = findViewById(R.id.user_password)
