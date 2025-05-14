@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import android.widget.EditText
+import android.text.InputType
 
 data class Request(
     val id: Int,
@@ -27,6 +30,7 @@ class UserActivity : AppCompatActivity() {
 
     private lateinit var layoutRequests: LinearLayout
     private val requests = mutableListOf<Request>()
+    private var selectedCategory = "Отпуск"
 
     private lateinit var btnVacations: Button
     private lateinit var btnBusinessTrips: Button
@@ -62,9 +66,22 @@ class UserActivity : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_NEW_REQUEST)
         }
 
+        // Delete own request
+        findViewById<Button>(R.id.btn_delete_request_user).setOnClickListener {
+            val uid = auth.currentUser?.uid ?: return@setOnClickListener
+            db.collection("requests").document(uid).delete()
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Заявка удалена", Toast.LENGTH_SHORT).show()
+                    layoutRequests.removeAllViews()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Ошибка удаления: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+        }
+
         // Load requests and set initial state
+        selectedCategory = "Отпуск"
         loadRequests()
-        onVacationsClicked(btnVacations) // Make "Vacations" button active by default
     }
 
     private fun loadRequests() {
@@ -86,7 +103,7 @@ class UserActivity : AppCompatActivity() {
                     val status = document.getString("status") ?: "Ожидание"
                     val request = Request(0, category, departureDate, arrivalDate, status)
                     requests.add(request)
-                    addRequestToView(request)
+                    showRequestsByCategory(selectedCategory)
                 } else {
                     Toast.makeText(this, "Заявок нет", Toast.LENGTH_SHORT).show()
                 }
@@ -173,14 +190,16 @@ class UserActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_title).text = "Ваши отпуска"
         setButtonActive(btnVacations)
         setButtonInactive(btnBusinessTrips)
-        showRequestsByCategory("Отпуск")
+        selectedCategory = "Отпуск"
+        showRequestsByCategory(selectedCategory)
     }
 
     fun onBusinessTripsClicked(view: View) {
         findViewById<TextView>(R.id.tv_title).text = "Ваши командировки"
         setButtonActive(btnBusinessTrips)
         setButtonInactive(btnVacations)
-        showRequestsByCategory("Командировка")
+        selectedCategory = "Командировка"
+        showRequestsByCategory(selectedCategory)
     }
 
     private fun setButtonActive(button: Button) {

@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.example.vacban.AdminUserSelectionActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         // Auto-login if user is already signed in
         auth.currentUser?.let { user ->
-            val nextActivity = if (user.uid == ADMIN_UID) AdminActivity::class.java else UserActivity::class.java
+            val nextActivity = if (user.uid == ADMIN_UID) AdminUserSelectionActivity::class.java else UserActivity::class.java
             startActivity(Intent(this, nextActivity))
             finish()
             return
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val uid = auth.currentUser?.uid
                         if (uid == ADMIN_UID) {
-                            startActivity(Intent(this, AdminActivity::class.java))
+                            startActivity(Intent(this, AdminUserSelectionActivity::class.java))
                         } else {
                             startActivity(Intent(this, UserActivity::class.java))
                         }

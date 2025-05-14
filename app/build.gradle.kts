@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.vacban"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.vacban"
@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
+    implementation("androidx.cardview:cardview:1.0.0")
     implementation(libs.firebase.firestore.ktx)
     implementation("com.google.firebase:firebase-auth-ktx:21.2.0")
     implementation("com.google.android.gms:play-services-base:18.2.0")

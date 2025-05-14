@@ -30,6 +30,12 @@
             android:name="com.example.vacban.AdminActivity"
             android:exported="false"/>
         <activity
+            android:name="com.example.vacban.DestinationsActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.vacban.AdminUserSelectionActivity"
+            android:exported="false" />
+        <activity
             android:name="com.example.vacban.MainActivity"
             android:exported="true">
 

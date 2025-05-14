@@ -40,14 +40,25 @@ class StepActivity : AppCompatActivity() {
             tripTypeSpinner.adapter = adapter
         }
 
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.trip_destinations,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            tripDestSpinner.adapter = adapter
-        }
+        // Load destinations from Firestore and apply user settings
+        // Fetch all destinations
+        db.collection("destinations").get()
+            .addOnSuccessListener { destSnap ->
+                val allDest = destSnap.mapNotNull { it.getString("name") }
+                // Fetch user settings
+                val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
+                db.collection("userSettings").document(uid).get()
+                    .addOnSuccessListener { userSnap ->
+                        val allowed = userSnap.get("allowedDestinations") as? List<String> ?: allDest
+                        val spinnerList = allDest.filter { allowed.contains(it) }
+                        val destAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerList)
+                        destAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        tripDestSpinner.adapter = destAdapter
+                    }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Ошибка загрузки мест: ${e.message}", Toast.LENGTH_LONG).show()
+            }
 
         // Set input filters and text watchers for date formatting
         val dateInputFilter = InputFilter.LengthFilter(10)
