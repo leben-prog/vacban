@@ -7,14 +7,27 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.example.vacban.AdminUserSelectionActivity
+import com.example.vacban.ThemeHelper
 
 class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Apply saved theme
+        ThemeHelper.applyTheme(this)
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()
+        setContentView(R.layout.activity_main)
+        // Theme toggle switch
+        val themeSwitch: SwitchMaterial = findViewById(R.id.theme_switch)
+        themeSwitch.isChecked = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val mode = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            ThemeHelper.setTheme(mode, this)
+        }
         // Auto-login if user is already signed in
         auth.currentUser?.let { user ->
             val nextActivity = if (user.uid == ADMIN_UID) AdminUserSelectionActivity::class.java else UserActivity::class.java
@@ -22,7 +35,6 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
-        setContentView(R.layout.activity_main)
 
         val userLogin: EditText = findViewById(R.id.user_login)
         val userPassword: EditText = findViewById(R.id.user_password)

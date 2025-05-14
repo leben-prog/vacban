@@ -8,6 +8,15 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!-- Theme toggle switch -->
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/theme_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Темная тема"
+        app:showText="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,40 +26,50 @@
         android:textSize="50dp"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/user_login"
-        android:layout_width="220dp"
-        android:layout_height="50dp"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="80dp"
-        android:hint="Введите email" />
+        android:layout_marginTop="80dp">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/user_login"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:hint="Введите email"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/user_password"
-        android:layout_width="220dp"
-        android:layout_height="50dp"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="Введите пароль"
-        android:layout_marginTop="20dp"
-        android:inputType="textPassword" />
+        android:layout_marginTop="20dp">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/user_password"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:hint="Введите пароль"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_log"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-
         android:text="Войти" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_reg"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:background="@drawable/button_border"
-        android:text="Регистрация"
-        android:textColor="#6750a4" />
+        android:text="Регистрация" />
 
 </LinearLayout>

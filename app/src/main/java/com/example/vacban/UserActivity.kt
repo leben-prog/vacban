@@ -14,6 +14,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import android.widget.EditText
 import android.text.InputType
+import com.google.android.material.button.MaterialButtonToggleGroup
 
 data class Request(
     val id: Int,
@@ -32,9 +33,6 @@ class UserActivity : AppCompatActivity() {
     private val requests = mutableListOf<Request>()
     private var selectedCategory = "Отпуск"
 
-    private lateinit var btnVacations: Button
-    private lateinit var btnBusinessTrips: Button
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
@@ -50,16 +48,19 @@ class UserActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
 
         layoutRequests = findViewById(R.id.layout_requests)
-        btnVacations = findViewById(R.id.btn_vacations)
-        btnBusinessTrips = findViewById(R.id.btn_business_trips)
-
-        btnVacations.setOnClickListener {
-            onVacationsClicked(it)
+        // Category toggle group listener
+        val toggleGroup = findViewById<MaterialButtonToggleGroup>(R.id.toggle_group_category)
+        toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.btn_vacations -> onVacationsClicked(findViewById(R.id.btn_vacations))
+                    R.id.btn_business_trips -> onBusinessTripsClicked(findViewById(R.id.btn_business_trips))
+                }
+            }
         }
 
-        btnBusinessTrips.setOnClickListener {
-            onBusinessTripsClicked(it)
-        }
+        // Set default category selection
+        toggleGroup.check(R.id.btn_vacations)
 
         findViewById<Button>(R.id.button_newreq).setOnClickListener {
             val intent = Intent(this, StepActivity::class.java)
@@ -114,70 +115,15 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun addRequestToView(request: Request) {
-        val requestLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(16, 16, 16, 16)
-            setBackgroundResource(android.R.drawable.dialog_holo_light_frame)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 16)
-            }
-        }
-
-        val categoryTextView = TextView(this).apply {
-            text = request.category
-            textSize = 18f
-            setTextColor(Color.BLACK)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(16, 0, 0, 0) // Shift text right
-            }
-            maxLines = 1
-            ellipsize = android.text.TextUtils.TruncateAt.END
-        }
-
-        val datesTextView = TextView(this).apply {
-            text = "${request.departureDate} - ${request.arrivalDate}"
-            textSize = 16f
-            setTextColor(Color.BLACK)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(16, 0, 0, 0) // Shift text right
-            }
-            maxLines = 1
-            ellipsize = android.text.TextUtils.TruncateAt.END
-        }
-
-        val statusTextView = TextView(this).apply {
-            text = request.status
-            textSize = 16f
-            setTextColor(when (request.status) {
-                "Одобрен" -> Color.GREEN
-                "Ожидание" -> Color.BLUE
-                "Отказано" -> Color.RED
-                else -> Color.BLACK
-            })
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(16, 0, 0, 0) // Shift text right
-            }
-            maxLines = 1
-            ellipsize = android.text.TextUtils.TruncateAt.END
-        }
-
-        requestLayout.addView(categoryTextView)
-        requestLayout.addView(datesTextView)
-        requestLayout.addView(statusTextView)
-
-        layoutRequests.addView(requestLayout)
+        // Inflate MaterialCardView item layout
+        val itemView = layoutInflater.inflate(R.layout.item_request_user, layoutRequests, false)
+        val tvCategory = itemView.findViewById<TextView>(R.id.tvUserCategory)
+        val tvDates = itemView.findViewById<TextView>(R.id.tvUserDates)
+        val tvStatus = itemView.findViewById<TextView>(R.id.tvUserStatus)
+        tvCategory.text = request.category
+        tvDates.text = "${request.departureDate} - ${request.arrivalDate}"
+        tvStatus.text = request.status
+        layoutRequests.addView(itemView)
     }
 
     private fun showRequestsByCategory(category: String) {
@@ -188,30 +134,14 @@ class UserActivity : AppCompatActivity() {
 
     fun onVacationsClicked(view: View) {
         findViewById<TextView>(R.id.tv_title).text = "Ваши отпуска"
-        setButtonActive(btnVacations)
-        setButtonInactive(btnBusinessTrips)
         selectedCategory = "Отпуск"
         showRequestsByCategory(selectedCategory)
     }
 
     fun onBusinessTripsClicked(view: View) {
         findViewById<TextView>(R.id.tv_title).text = "Ваши командировки"
-        setButtonActive(btnBusinessTrips)
-        setButtonInactive(btnVacations)
         selectedCategory = "Командировка"
         showRequestsByCategory(selectedCategory)
-    }
-
-    private fun setButtonActive(button: Button) {
-        button.isSelected = true
-        button.setBackgroundResource(if (button.id == R.id.btn_vacations) R.drawable.button_left_active else R.drawable.button_right_active)
-        button.setTextColor(resources.getColor(R.color.white))
-    }
-
-    private fun setButtonInactive(button: Button) {
-        button.isSelected = false
-        button.setBackgroundResource(if (button.id == R.id.btn_vacations) R.drawable.button_left_inactive else R.drawable.button_right_inactive)
-        button.setTextColor(resources.getColor(R.color.purple))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

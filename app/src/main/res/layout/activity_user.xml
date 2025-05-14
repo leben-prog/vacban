@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,38 +9,35 @@
     tools:context=".UserActivity">
 
     <!-- Переключатель между вкладками -->
-    <LinearLayout
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggle_group_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        app:singleSelection="true"
+        android:layout_marginBottom="16dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_vacations"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Отпуска"
-            android:background="@drawable/button_selector_left"
-            android:onClick="onVacationsClicked"
-            android:textColor="@color/white" />
+            android:text="Отпуска" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_business_trips"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Командировки"
-            android:background="@drawable/button_selector_right"
-            android:onClick="onBusinessTripsClicked"
-            android:textColor="@color/purple" />
-    </LinearLayout>
+            android:text="Командировки" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <!-- Отделяющая линия -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#000"
+        android:background="?attr/colorOutline"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"/>
 
@@ -72,7 +70,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginEnd="8dp"
-                android:background="@android:color/holo_green_dark" />
+                android:background="?attr/colorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,7 +91,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginEnd="8dp"
-                android:background="@android:color/holo_blue_dark" />
+                android:background="?attr/colorSecondary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -114,7 +112,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginEnd="8dp"
-                android:background="@android:color/holo_red_dark" />
+                android:background="?attr/colorError" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -139,25 +137,28 @@
 
     </ScrollView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_newreq"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Создать новую заявку"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:text="Создать новую заявку" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_delete_request_user"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Удалить заявку"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:text="Удалить заявку" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/logoutButton"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Выйти"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:text="Выйти" />
 
 </LinearLayout>
